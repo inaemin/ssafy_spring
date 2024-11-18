@@ -3,8 +3,10 @@ package com.ssafy.mvc.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.mvc.model.dto.Board;
@@ -26,6 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api-board")
 @Tag(name="BoardRestful API", description="게시판 CRUD")
+@CrossOrigin("*")
 public class BoardRestController {
 	// 서비스 의존성 주입
 	private final BoardService boardService;
@@ -36,26 +40,30 @@ public class BoardRestController {
 	}
 	
 	// 게시글 전체조회
-//	@GetMapping("/board")
-//	public ResponseEntity<List<Board>> list() {
-//		List<Board> list = boardService.getBoardList();
-//		
-//		return new ResponseEntity<>(list, HttpStatus.OK);
-//	}
+	@GetMapping("/board")
+	@CrossOrigin(value="*", methods = RequestMethod.GET)
+	public ResponseEntity<List<Board>> list() {
+		List<Board> list = boardService.getBoardList();
+		
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("Access-Control-Allow-Origin", "*");
+		
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
 	
 	// 검색
-	@GetMapping("/board")
-	@Operation(summary="게시글 검색 및 조회", description="조건에 따른 검색을 수행할 수 있습니다.")
-	public ResponseEntity<?> list(@ModelAttribute SearchCondition condition) {
-		System.out.println(condition);
-		List<Board> list = boardService.search(condition);
-		
-		
-		if (list == null || list.size() == 0) {
-			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<List<Board>>(list, HttpStatus.OK);
-	}
+//	@GetMapping("/board")
+//	@Operation(summary="게시글 검색 및 조회", description="조건에 따른 검색을 수행할 수 있습니다.")
+//	public ResponseEntity<?> list(@ModelAttribute SearchCondition condition) {
+//		System.out.println(condition);
+//		List<Board> list = boardService.search(condition);
+//		
+//		
+//		if (list == null || list.size() == 0) {
+//			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+//		}
+//		return new ResponseEntity<List<Board>>(list, HttpStatus.OK);
+//	}
 	
 	// 게시글 상세보기
 	@GetMapping("/board/{id}")
